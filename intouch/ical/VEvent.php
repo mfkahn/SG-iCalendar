@@ -47,8 +47,10 @@ class VEvent {
 	 */
 	public function __construct($data, iCal $ical) {
 
-		$this->uid = $data['uid']->getData();
-		unset($data['uid']);
+		if ( isset($data['uid']) ) {
+			$this->uid = $data['uid']->getData();
+			unset($data['uid']);
+		}
 
 		if ( isset($data['rrule']) ) {
 			$this->recurrence = new Recurrence($data['rrule']);
