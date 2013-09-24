@@ -1,12 +1,13 @@
 <?php
 
-require_once('../intouch/ical/iCal.php');
+require_once '../intouch/ical/iCal.php';
 
 use intouch\ical\iCal;
 use intouch\ical\Query;
 
-function dump_t($x) {
-	echo "<pre>".print_r($x,true)."</pre>";
+function dump_t($x)
+{
+    echo "<pre>".print_r($x,true)."</pre>";
 }
 
 //local
@@ -21,34 +22,33 @@ $query = new Query();
 $evts = $ical->getEvents();
 //$evts = $query->Between($ical,strtotime('20100901'),strtotime('20101131'));
 
-
 $data = array();
-foreach($evts as $id => $ev) {
-	$jsEvt = array(
-		"id" => ($id+1),
-		"title" => $ev->getProperty('summary'),
-		"start" => $ev->getStart(),
-		"end"   => $ev->getEnd()-1,
-		"allDay" => $ev->isWholeDay()
-	);
+foreach ($evts as $id => $ev) {
+    $jsEvt = array(
+        "id" => ($id+1),
+        "title" => $ev->getProperty('summary'),
+        "start" => $ev->getStart(),
+        "end"   => $ev->getEnd()-1,
+        "allDay" => $ev->isWholeDay()
+    );
 
-	if (isset($ev->recurrence)) {
-		$count = 0;
-		$start = $ev->getStart();
-		$freq = $ev->getFrequency();
-		if ($freq->firstOccurrence() == $start)
-			$data[] = $jsEvt;
-		while (($next = $freq->nextOccurrence($start)) > 0 ) {
-			if (!$next or $count >= 1000) break;
-			$count++;
-			$start = $next;
-			$jsEvt["start"] = $start;
-			$jsEvt["end"] = $start + $ev->getDuration()-1;
+    if (isset($ev->recurrence)) {
+        $count = 0;
+        $start = $ev->getStart();
+        $freq = $ev->getFrequency();
+        if ($freq->firstOccurrence() == $start)
+            $data[] = $jsEvt;
+        while (($next = $freq->nextOccurrence($start)) > 0 ) {
+            if (!$next or $count >= 1000) break;
+            $count++;
+            $start = $next;
+            $jsEvt["start"] = $start;
+            $jsEvt["end"] = $start + $ev->getDuration()-1;
 
-			$data[] = $jsEvt;
-		}
-	} else
-		$data[] = $jsEvt;
+            $data[] = $jsEvt;
+        }
+    } else
+        $data[] = $jsEvt;
 
 }
 //echo(date('Ymd\n',$data[0][start]));
@@ -65,22 +65,22 @@ $events = "events:".json_encode($data).',';
 <link rel="stylesheet" type="text/css" href="//arshaw.com/js/fullcalendar-1.6.1/fullcalendar/fullcalendar.css">
 
 <style type='text/css'>
-	body div {
-		text-align: center;
-	}
-	body {
-		font-size: 14px;
-		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
-	}
-	div#loading {
-		position: absolute;
-		top: 5px;
-		right: 5px;
-	}
-	div#calendar {
-		width: 900px;
-		margin: 0 auto;
-	}
+    body div {
+        text-align: center;
+    }
+    body {
+        font-size: 14px;
+        font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+    }
+    div#loading {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+    div#calendar {
+        width: 900px;
+        margin: 0 auto;
+    }
 </style>
 </head>
 <body>
@@ -111,13 +111,14 @@ $events = "events:".json_encode($data).',';
             eventClick: function(event) {
                 // opens events in a popup window
                 window.open(event.url, 'gcalevent', 'width=700,height=600');
+
                 return false;
             },
 
             loading: function(bool) {
                 if (bool) {
                     $('#loading').show();
-                }else{
+                } else {
                     $('#loading').hide();
                 }
             }
